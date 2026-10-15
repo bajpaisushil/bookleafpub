@@ -33,14 +33,14 @@ An author support and communication portal for BookLeaf Publishing. Authors trac
 
 All 10 authors and 18 books from `bookleaf_sample_data.json` are seeded as-is. The login page also has one-click demo buttons.
 
-| Role   | Email                                 | Password    | Good for                                                        |
-| ------ | ------------------------------------- | ----------- | --------------------------------------------------------------- |
-| Author | `priya.sharma@email.com`              | `author123` | Two live books, pending royalty                                 |
-| Author | `kavita.deshmukh@email.com`           | `author123` | A book in production; balance below the ₹1,000 payout threshold |
-| Author | `sneha.kulkarni@email.com`            | `author123` | Three books, including one at Cover Design                      |
-| Author | any other author email in the dataset | `author123` |                                                                 |
-| Admin  | `admin@bookleaf.demo`                 | `admin123`  | Neha Verma, support team                                        |
-| Admin  | `ops@bookleaf.demo`                   | `admin123`  | Rahul Mehta, a second admin, for assignment                     |
+| Role   | Email                                 | Password    | Good for                                                             |
+| ------ | ------------------------------------- | ----------- | -------------------------------------------------------------------- |
+| Author | `priya.sharma@email.com`              | `author123` | Two live books, pending royalty                                      |
+| Author | `kavita.deshmukh@email.com`           | `author123` | A book in production; balance below the ₹1,000 payout threshold      |
+| Author | `sneha.kulkarni@email.com`            | `author123` | Three books, including one at Cover Design                           |
+| Author | any other author email in the dataset | `author123` |                                                                      |
+| Admin  | `admin@bookleaf.demo`                 | `admin123`  | Neha Verma, support team                                             |
+| Admin  | `ops@bookleaf.demo`                   | `admin123`  | Rahul Mehta, a second admin, to try Assign to me and the Mine filter |
 
 The seed also creates eight demo tickets covering every category, left **unclassified**. The API's startup sweep classifies them through the real pipeline (the LLM if a key is set, keyword rules otherwise), so nothing in the seed pretends to be model output.
 
@@ -50,7 +50,7 @@ The seed also creates eight demo tickets covering every category, left **unclass
 
 ## Run it locally
 
-**Prerequisites:** Node.js 20+ and Docker (for Postgres).
+**Prerequisites:** Node.js 20.19+ (22 LTS recommended; Prisma 7 needs `^20.19 || ^22.12 || >=24`) and Docker (for Postgres).
 
 ```bash
 npm install
@@ -83,6 +83,12 @@ Without a key everything still works, using rules and templates.
 
 ```bash
 docker compose --profile app up --build    # http://localhost:3000
+```
+
+Compose defaults to `AI_PROVIDER=none`. To run the Docker stack with AI, pass the key inline or put the same variables in a root `.env` file (git-ignored, read by Compose):
+
+```bash
+AI_PROVIDER=anthropic ANTHROPIC_API_KEY=sk-ant-... docker compose --profile app up --build
 ```
 
 Useful scripts: `npm test`, `npm run typecheck`, `npm run lint`, `npm run format`, `npm run db:reset`.
@@ -201,23 +207,23 @@ The `LlmProvider` interface (`src/ai/llm.ts`) keeps the rest of the app provider
 
 ### Graceful degradation
 
-| Failure                                           | What happens                                                                                                             |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| No key / `AI_PROVIDER=none`                       | Keyword rules classify; drafts come from policy templates that still quote the author's real figures and dates           |
-| Timeout, 429 or 5xx                               | The SDK retries with backoff (20s timeout, 2 retries), then falls back as above                                          |
-| Model returns invalid JSON or an unknown category | Zod rejects it; rules take over and the issue is logged                                                                  |
-| Refusal, empty or truncated output                | Treated as a failure; template draft                                                                                     |
-| Any failure                                       | Recorded in `AiCall` with the error and shown in Insights; the UI labels rule/template output so admins know to check it |
+| Failure                                           | What happens                                                                                                                                                                      |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| No key / `AI_PROVIDER=none`                       | Keyword rules classify; drafts come from policy templates that still quote the author's real figures and dates                                                                    |
+| Timeout, 429 or 5xx                               | The SDK retries with backoff (20s timeout, 2 retries), then falls back as above                                                                                                   |
+| Model returns invalid JSON or an unknown category | Zod rejects it; logged as a failed call (tokens included); rules take over                                                                                                        |
+| Refusal, empty or truncated output                | Treated as a failure; template draft                                                                                                                                              |
+| Any failure                                       | Recorded in `AiCall` with the error, so the Insights failure rate covers provider errors and unusable output alike; the UI labels rule/template output so admins know to check it |
 
 ### Cost management
 
 - **Generate only what's used.** Classification runs once per ticket. Drafts are generated lazily for tickets an admin actually opens, cached on the ticket, and concurrent requests are de-duplicated.
 - **Send only what's needed.** One category's policy section and examples (not the whole knowledge base), only the relevant book's facts, the last 8 messages, and long text truncated.
-- **Prompt caching.** System prompts are static (no dates or ids), so Anthropic's prompt caching (`cache_control`) and OpenAI's automatic prefix caching bill repeat instructions at about a tenth of the price.
+- **Prompt caching.** System prompts are static (no dates or ids) and marked with `cache_control`. On Anthropic they're above Haiku 5.5's 512-token minimum, so repeat instructions are billed at about a tenth of the input price. OpenAI caches automatically only from 1,024 tokens (at a 50% discount on gpt-4o-mini), so prompts this short mostly won't qualify there.
 - **Bounded output.** `max_tokens` caps, low/medium effort, and a 25-word reason for classification.
 - **Guard rails.** AI endpoints are rate limited per admin, and every call's tokens, latency and estimated cost appear on the Insights page.
 
-**Rough estimate.** The static system prompts are about 750 tokens (classification) and 620 (drafts); per-ticket content adds about 180 and 720. On Haiku 5.5 that's under $0.001 per ticket for classification plus one draft, around $10 for 10,000 tickets a month. These are estimates from prompt sizes; measured numbers appear on the Insights page once a key is configured.
+**Rough estimate.** The static system prompts are about 750 tokens (classification) and 620 (drafts); per-ticket content adds about 180 and 720. On Haiku 5.5 that's roughly $0.0005 per ticket for classification plus one draft, well under $10 for 10,000 tickets a month. These are estimates at about 4 characters per token, and real tokenizer counts can run higher, so treat them as approximate; measured numbers appear on the Insights page once a key is configured.
 
 ### Key security
 
