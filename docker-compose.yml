@@ -1,3 +1,5 @@
+# Local development:  docker compose up -d db
+# Full stack:         docker compose --profile app up --build   ->  http://localhost:3000
 services:
   db:
     image: postgres:16-alpine
@@ -13,6 +15,38 @@ services:
       test: ["CMD-SHELL", "pg_isready -U bookleaf"]
       interval: 5s
       retries: 10
+
+  api:
+    profiles: [app]
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://bookleaf:bookleaf@db:5432/bookleaf
+      JWT_SECRET: ${JWT_SECRET:-local-docker-secret-change-me-before-deploying}
+      WEB_ORIGIN: http://localhost:3000
+      AI_PROVIDER: ${AI_PROVIDER:-none}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+
+  web:
+    profiles: [app]
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        API_URL: http://api:4000
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
 
 volumes:
   pgdata:

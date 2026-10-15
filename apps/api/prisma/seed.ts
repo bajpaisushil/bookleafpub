@@ -61,6 +61,13 @@ async function main() {
   const file = new URL("./data/bookleaf_sample_data.json", import.meta.url);
   const data = JSON.parse(readFileSync(file, "utf8")) as { authors: SampleAuthor[] };
 
+  // Deployments run the seed on every start with SEED_IF_EMPTY=true, so a
+  // restart never wipes tickets created during a demo.
+  if (process.env.SEED_IF_EMPTY === "true" && (await prisma.user.count()) > 0) {
+    console.log("Database already has data, skipping seed.");
+    return;
+  }
+
   console.log("Clearing existing data...");
   await prisma.$transaction([
     prisma.aiCall.deleteMany(),
