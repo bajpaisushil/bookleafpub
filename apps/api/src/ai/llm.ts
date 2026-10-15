@@ -66,50 +66,65 @@ function modelFor(task: AiTask) {
 }
 
 /**
- * Sends one request to the configured LLM and records tokens, latency and
- * failures in the AiCall table. Throws AiUnavailableError on any failure so
- * callers can fall back to rules/templates.
+ * Sends one request to the configured LLM, turns the reply into something
+ * usable with `parse`, and records tokens, latency and outcome in the AiCall
+ * table. A reply that `parse` rejects (bad JSON, unknown category, empty
+ * draft) counts as a failed call, just like a timeout or a 5xx, so the
+ * failure rate on the Insights page is honest.
+ *
+ * Throws AiUnavailableError on any failure so callers can fall back to
+ * rules/templates.
  */
-export async function runLlm(task: AiTask, request: LlmRequest, ticketId?: string): Promise<string> {
+export async function runLlm<T>(
+  task: AiTask,
+  request: LlmRequest,
+  parse: (text: string) => T,
+  ticketId?: string,
+): Promise<T> {
   if (!provider) throw new AiUnavailableError("No AI provider is configured.");
 
   const model = modelFor(task);
   const startedAt = Date.now();
+  let result: LlmResult | undefined;
 
   try {
-    const result = await provider.complete(model, request);
-    void logCall({
-      task,
-      model,
-      ticketId,
-      latencyMs: Date.now() - startedAt,
-      success: true,
-      inputTokens: result.inputTokens,
-      outputTokens: result.outputTokens,
-      cachedTokens: result.cachedTokens,
-    });
-    return result.text;
+    result = await provider.complete(model, request);
+    const value = parse(result.text);
+    void logCall({ task, model, ticketId, startedAt, result, success: true });
+    return value;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    void logCall({ task, model, ticketId, latencyMs: Date.now() - startedAt, success: false, error: message });
+    console.warn(`AI ${task} failed for ticket ${ticketId ?? "-"}: ${message}`);
+    void logCall({ task, model, ticketId, startedAt, result, success: false, error: message });
     throw new AiUnavailableError(message);
   }
 }
 
-async function logCall(data: {
+// Tokens are recorded even for failed calls when the provider answered,
+// because unusable output is still billed.
+async function logCall(call: {
   task: AiTask;
   model: string;
   ticketId?: string;
-  latencyMs: number;
+  startedAt: number;
+  result?: LlmResult;
   success: boolean;
   error?: string;
-  inputTokens?: number;
-  outputTokens?: number;
-  cachedTokens?: number;
 }) {
   try {
     await prisma.aiCall.create({
-      data: { ...data, provider: provider?.name ?? "none", error: data.error?.slice(0, 500) },
+      data: {
+        task: call.task,
+        model: call.model,
+        ticketId: call.ticketId,
+        provider: provider?.name ?? "none",
+        latencyMs: Date.now() - call.startedAt,
+        success: call.success,
+        error: call.error?.slice(0, 500),
+        inputTokens: call.result?.inputTokens ?? 0,
+        outputTokens: call.result?.outputTokens ?? 0,
+        cachedTokens: call.result?.cachedTokens ?? 0,
+      },
     });
   } catch (error) {
     console.error("Failed to log AI call", error);

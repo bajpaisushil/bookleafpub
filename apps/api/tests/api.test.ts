@@ -291,6 +291,12 @@ describe("AI integration", () => {
     const updated = await seededTicket(1004);
     expect(updated.aiStatus).toBe("FALLBACK");
     expect(updated.category).toBe("DISTRIBUTION");
+
+    // Unusable output counts as a failed call, and its tokens are still recorded.
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    const call = await prisma.aiCall.findFirst({ where: { ticketId: ticket.id }, orderBy: { createdAt: "desc" } });
+    expect(call?.success).toBe(false);
+    expect(call?.inputTokens).toBe(500);
   });
 
   it("never overwrites an admin's override", async () => {

@@ -10,8 +10,9 @@ export class OpenAIProvider implements LlmProvider {
   }
 
   async complete(model: string, request: LlmRequest): Promise<LlmResult> {
-    // OpenAI caches long identical prompt prefixes automatically, so keeping
-    // the system prompt first and unchanged gives the same saving as Anthropic.
+    // OpenAI caches identical prompt prefixes automatically, but only from
+    // 1,024 tokens, so our shorter system prompts usually won't qualify.
+    // Keeping the system prompt first and unchanged lets longer ones benefit.
     const response = await this.client.chat.completions.create({
       model,
       max_completion_tokens: request.maxTokens,
