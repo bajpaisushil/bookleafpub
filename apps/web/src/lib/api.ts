@@ -43,4 +43,4 @@ export async function api<T>(path: string, options: { method?: string; body?: un
 }
 
 // SWR fetcher: the cache key is the API path.
-export const fetcher = <T,>(path: string) => api<T>(path);
+export const fetcher = <T>(path: string) => api<T>(path);

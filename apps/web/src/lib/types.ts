@@ -3,12 +3,7 @@
 export type Role = "AUTHOR" | "ADMIN";
 export type TicketStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
 export type TicketCategory =
-  | "ROYALTY_PAYMENTS"
-  | "ISBN_METADATA"
-  | "PRINTING_QUALITY"
-  | "DISTRIBUTION"
-  | "BOOK_STATUS"
-  | "GENERAL";
+  "ROYALTY_PAYMENTS" | "ISBN_METADATA" | "PRINTING_QUALITY" | "DISTRIBUTION" | "BOOK_STATUS" | "GENERAL";
 export type TicketPriority = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 export type AiStatus = "PENDING" | "COMPLETED" | "FALLBACK";
 export type BookStatus =

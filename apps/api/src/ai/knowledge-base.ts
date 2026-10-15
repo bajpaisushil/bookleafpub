@@ -75,7 +75,8 @@ export const EXAMPLES: Record<TicketCategory, { query: string; approach: string 
   ],
   PRINTING_QUALITY: [
     {
-      query: "I received my author copies and the print quality is terrible. The images are blurry and pages are misaligned.",
+      query:
+        "I received my author copies and the print quality is terrible. The images are blurry and pages are misaligned.",
       approach:
         "Apologise sincerely. Ask the author to share photos of the defective copies. Confirm BookLeaf will arrange a free reprint once verified, with a timeline of 5–7 business days.",
     },

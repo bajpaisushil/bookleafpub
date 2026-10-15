@@ -9,9 +9,27 @@ import { ApiError, api } from "@/lib/api";
 import type { User } from "@/lib/types";
 
 const DEMO_ACCOUNTS = [
-  { name: "Priya Sharma", note: "Author · 2 live books", email: "priya.sharma@email.com", password: "author123", icon: BookOpen },
-  { name: "Kavita Deshmukh", note: "Author · book in production", email: "kavita.deshmukh@email.com", password: "author123", icon: Hourglass },
-  { name: "Neha Verma", note: "Admin · support team", email: "admin@bookleaf.demo", password: "admin123", icon: Headset },
+  {
+    name: "Priya Sharma",
+    note: "Author · 2 live books",
+    email: "priya.sharma@email.com",
+    password: "author123",
+    icon: BookOpen,
+  },
+  {
+    name: "Kavita Deshmukh",
+    note: "Author · book in production",
+    email: "kavita.deshmukh@email.com",
+    password: "author123",
+    icon: Hourglass,
+  },
+  {
+    name: "Neha Verma",
+    note: "Admin · support team",
+    email: "admin@bookleaf.demo",
+    password: "admin123",
+    icon: Headset,
+  },
 ];
 
 export function LoginForm() {
@@ -112,7 +130,10 @@ export function LoginForm() {
                 <span className="block text-sm font-medium text-stone-900">{account.name}</span>
                 <span className="block text-xs text-stone-500">{account.note}</span>
               </span>
-              <ArrowRight className="size-4 text-stone-300 transition group-hover:translate-x-0.5 group-hover:text-brand-700" aria-hidden />
+              <ArrowRight
+                className="size-4 text-stone-300 transition group-hover:translate-x-0.5 group-hover:text-brand-700"
+                aria-hidden
+              />
             </button>
           ))}
         </div>

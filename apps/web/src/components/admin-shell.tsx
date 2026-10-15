@@ -57,7 +57,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 <p className="truncate text-sm font-medium text-white">{user.name}</p>
                 <p className="truncate text-xs text-brand-100/60">{user.email}</p>
               </div>
-              <button onClick={logout} className="text-brand-100/60 hover:text-white" aria-label="Sign out" title="Sign out">
+              <button
+                onClick={logout}
+                className="text-brand-100/60 hover:text-white"
+                aria-label="Sign out"
+                title="Sign out"
+              >
                 <LogOut className="size-4" />
               </button>
             </div>

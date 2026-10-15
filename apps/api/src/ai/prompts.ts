@@ -22,11 +22,7 @@ function daysAgo(date: Date, today: Date) {
 }
 
 function describeBook(book: Book) {
-  const lines = [
-    `Title: ${book.title}`,
-    `ISBN: ${book.isbn}`,
-    `Genre: ${book.genre}`,
-  ];
+  const lines = [`Title: ${book.title}`, `ISBN: ${book.isbn}`, `Genre: ${book.genre}`];
 
   if (book.status === "PUBLISHED") {
     lines.push(

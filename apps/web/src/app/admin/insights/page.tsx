@@ -32,7 +32,9 @@ export default function InsightsPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Insights</h1>
-        <p className="mt-1 text-sm text-stone-500">Queue health and how the AI assistant is performing over the last 30 days.</p>
+        <p className="mt-1 text-sm text-stone-500">
+          Queue health and how the AI assistant is performing over the last 30 days.
+        </p>
       </div>
 
       {error && <ErrorState onRetry={() => mutate()} />}
@@ -43,7 +45,12 @@ export default function InsightsPage() {
           <AiStatusBanner ai={data.ai} />
 
           <section className="grid grid-cols-2 gap-4 lg:grid-cols-5" aria-label="AI usage">
-            <StatTile label="AI calls" icon={<Bot className="size-4" aria-hidden />} value={formatNumber(data.ai.last30Days.calls)} detail="Classification + drafts" />
+            <StatTile
+              label="AI calls"
+              icon={<Bot className="size-4" aria-hidden />}
+              value={formatNumber(data.ai.last30Days.calls)}
+              detail="Classification + drafts"
+            />
             <StatTile
               label="Estimated cost"
               icon={<Coins className="size-4" aria-hidden />}
@@ -96,13 +103,17 @@ export default function InsightsPage() {
                       <tr key={`${row.task}-${row.model}-${row.success}`}>
                         <td className="px-4 py-2.5 font-medium text-stone-900 capitalize">{row.task}</td>
                         <td className="px-4 py-2.5 font-mono text-xs text-stone-600">{row.model}</td>
-                        <td className="px-4 py-2.5">{row.success ? "Success" : <span className="text-red-700">Failed</span>}</td>
+                        <td className="px-4 py-2.5">
+                          {row.success ? "Success" : <span className="text-red-700">Failed</span>}
+                        </td>
                         <td className="px-4 py-2.5 text-right">{formatNumber(row.calls)}</td>
                         <td className="px-4 py-2.5 text-right">{formatNumber(row.inputTokens)}</td>
                         <td className="px-4 py-2.5 text-right">{formatNumber(row.cachedTokens)}</td>
                         <td className="px-4 py-2.5 text-right">{formatNumber(row.outputTokens)}</td>
                         <td className="px-4 py-2.5 text-right">{(row.avgLatencyMs / 1000).toFixed(1)}s</td>
-                        <td className="px-4 py-2.5 text-right">{row.estimatedCostUsd === null ? "—" : formatUsd(row.estimatedCostUsd)}</td>
+                        <td className="px-4 py-2.5 text-right">
+                          {row.estimatedCostUsd === null ? "—" : formatUsd(row.estimatedCostUsd)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -118,7 +129,9 @@ export default function InsightsPage() {
                 {STATUSES.map((status) => (
                   <li key={status} className="flex items-center justify-between px-4 py-2.5 text-sm">
                     <StatusBadge status={status} />
-                    <span className="font-semibold text-stone-900 tabular-nums">{data.tickets.byStatus[status] ?? 0}</span>
+                    <span className="font-semibold text-stone-900 tabular-nums">
+                      {data.tickets.byStatus[status] ?? 0}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -129,7 +142,9 @@ export default function InsightsPage() {
                 {PRIORITIES.map((priority) => (
                   <li key={priority} className="flex items-center justify-between px-4 py-2.5 text-sm">
                     <PriorityBadge priority={priority} />
-                    <span className="font-semibold text-stone-900 tabular-nums">{data.tickets.unresolvedByPriority[priority] ?? 0}</span>
+                    <span className="font-semibold text-stone-900 tabular-nums">
+                      {data.tickets.unresolvedByPriority[priority] ?? 0}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -162,9 +177,9 @@ function AiStatusBanner({ ai }: { ai: AdminStats["ai"] }) {
       <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
         <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
         <p>
-          <strong className="font-semibold">AI is not configured.</strong> Tickets are classified by keyword rules and drafts come
-          from policy templates. Set <code className="rounded bg-amber-100 px-1">AI_PROVIDER</code> and an API key on the API server to
-          enable it.
+          <strong className="font-semibold">AI is not configured.</strong> Tickets are classified by keyword rules and
+          drafts come from policy templates. Set <code className="rounded bg-amber-100 px-1">AI_PROVIDER</code> and an
+          API key on the API server to enable it.
         </p>
       </div>
     );

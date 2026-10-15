@@ -44,9 +44,7 @@ export async function getAdminStats(adminId: string) {
   ]);
 
   const statusCounts = Object.fromEntries(byStatus.map((row) => [row.status, row._count._all]));
-  const priorityCounts = Object.fromEntries(
-    byPriority.map((row) => [row.priority ?? "UNCLASSIFIED", row._count._all]),
-  );
+  const priorityCounts = Object.fromEntries(byPriority.map((row) => [row.priority ?? "UNCLASSIFIED", row._count._all]));
 
   const usage = aiCalls.map((row) => {
     const input = row._sum.inputTokens ?? 0;

@@ -89,7 +89,9 @@ describe("auth", () => {
   });
 
   it("rejects tampered tokens", async () => {
-    const res = await request(app).get("/api/tickets").set(auth(priya.slice(0, -2) + "xx"));
+    const res = await request(app)
+      .get("/api/tickets")
+      .set(auth(priya.slice(0, -2) + "xx"));
     expect(res.status).toBe(401);
   });
 });
@@ -269,7 +271,9 @@ describe("AI integration", () => {
   it("uses the model's classification when it responds", async () => {
     const ticket = await seededTicket(1002);
     setLlmProvider(
-      fakeProvider(JSON.stringify({ category: "ISBN_METADATA", priority: "CRITICAL", reason: "Live book has a mismatched ISBN." })),
+      fakeProvider(
+        JSON.stringify({ category: "ISBN_METADATA", priority: "CRITICAL", reason: "Live book has a mismatched ISBN." }),
+      ),
     );
     await classifyAndSave(ticket.id);
 
@@ -294,7 +298,9 @@ describe("AI integration", () => {
     await classifyAndSave(ticket.id);
     await request(app).patch(`/api/tickets/${ticket.id}`).set(auth(admin)).send({ category: "GENERAL" }).expect(200);
 
-    setLlmProvider(fakeProvider(JSON.stringify({ category: "PRINTING_QUALITY", priority: "HIGH", reason: "Defective copies." })));
+    setLlmProvider(
+      fakeProvider(JSON.stringify({ category: "PRINTING_QUALITY", priority: "HIGH", reason: "Defective copies." })),
+    );
     const res = await request(app).post(`/api/tickets/${ticket.id}/classify`).set(auth(admin));
     expect(res.body.ticket.category).toBe("GENERAL");
     expect(res.body.ticket.ai.category).toBe("PRINTING_QUALITY");
@@ -302,7 +308,9 @@ describe("AI integration", () => {
 
   it("caches drafts and only calls the model again on regenerate", async () => {
     const ticket = await seededTicket(1006);
-    const provider = fakeProvider("Hi Sneha,\n\nThank you for your question about your royalty amount...\n\nWarm regards,\nBookLeaf Author Support");
+    const provider = fakeProvider(
+      "Hi Sneha,\n\nThank you for your question about your royalty amount...\n\nWarm regards,\nBookLeaf Author Support",
+    );
     setLlmProvider(provider);
 
     const first = await request(app).post(`/api/tickets/${ticket.id}/draft`).set(auth(admin)).send({});

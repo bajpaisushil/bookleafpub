@@ -14,7 +14,9 @@ export function LiveIndicator({ status, inverted = false }: { status: LiveStatus
       title="Updates appear here automatically without refreshing"
     >
       <span className="relative flex size-2">
-        {status === "live" && <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60" />}
+        {status === "live" && (
+          <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+        )}
         <span
           className={cn(
             "relative inline-flex size-2 rounded-full",

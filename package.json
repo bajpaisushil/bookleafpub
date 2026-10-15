@@ -17,10 +17,13 @@
     "db:up": "docker compose up -d db",
     "db:migrate": "npm run db:migrate -w apps/api",
     "db:seed": "npm run db:seed -w apps/api",
-    "db:reset": "npm run db:reset -w apps/api"
+    "db:reset": "npm run db:reset -w apps/api",
+    "format": "prettier --write \"apps/*/src/**/*.{ts,tsx,css}\" \"apps/api/{tests,prisma}/**/*.ts\" \"apps/*/*.config.ts\"",
+    "format:check": "prettier --check \"apps/*/src/**/*.{ts,tsx,css}\" \"apps/api/{tests,prisma}/**/*.ts\" \"apps/*/*.config.ts\""
   },
   "devDependencies": {
-    "concurrently": "^10.0.6"
+    "concurrently": "^10.0.6",
+    "prettier": "^3.9.10"
   },
   "engines": {
     "node": ">=20"

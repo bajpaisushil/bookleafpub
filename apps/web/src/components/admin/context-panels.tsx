@@ -41,7 +41,9 @@ export function AuthorPanel({ author }: { author: AdminTicket["author"] }) {
         </ul>
         <div className="border-t border-stone-100 pt-3">
           <p className="mb-2 flex justify-between text-xs text-stone-500">
-            <span>{author.books.length} book{author.books.length === 1 ? "" : "s"}</span>
+            <span>
+              {author.books.length} book{author.books.length === 1 ? "" : "s"}
+            </span>
             <span>Total pending {formatRupees(pending)}</span>
           </p>
           <ul className="space-y-1.5">
@@ -79,7 +81,10 @@ export function BookPanel({ book }: { book: NonNullable<AdminTicket["book"]> }) 
             <Fact label="Earned" value={formatRupees(book.totalRoyaltyEarned)} />
             <Fact label="Paid" value={formatRupees(book.royaltyPaid)} />
             <Fact label="Pending" value={formatRupees(book.royaltyPending)} />
-            <Fact label="Last payout" value={book.lastRoyaltyPayoutDate ? formatDate(book.lastRoyaltyPayoutDate) : "Never"} />
+            <Fact
+              label="Last payout"
+              value={book.lastRoyaltyPayoutDate ? formatDate(book.lastRoyaltyPayoutDate) : "Never"}
+            />
             <Fact label="Printed by" value={book.printPartner ?? "—"} />
             <Fact label="Available on" value={book.availableOn.join(", ") || "—"} wide />
           </dl>

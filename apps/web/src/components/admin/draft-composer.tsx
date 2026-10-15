@@ -19,7 +19,13 @@ type Tab = "reply" | "note";
  * that is waiting on us, the draft is requested automatically and dropped
  * into the editor. The admin always reviews and edits before sending.
  */
-export function DraftComposer({ ticket, onUpdated }: { ticket: AdminTicket; onUpdated: (ticket: AdminTicket) => void }) {
+export function DraftComposer({
+  ticket,
+  onUpdated,
+}: {
+  ticket: AdminTicket;
+  onUpdated: (ticket: AdminTicket) => void;
+}) {
   const toast = useToast();
   const [tab, setTab] = useState<Tab>("reply");
   const [reply, setReply] = useState(ticket.ai.draft ?? "");
@@ -138,15 +144,11 @@ export function DraftComposer({ ticket, onUpdated }: { ticket: AdminTicket; onUp
               </span>
             )}
             {!drafting && !draft && !awaitingUs && (
-              <span className="text-xs text-stone-500">Not generated, since the author hasn&apos;t written since our last reply.</span>
+              <span className="text-xs text-stone-500">
+                Not generated, since the author hasn&apos;t written since our last reply.
+              </span>
             )}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="ml-auto"
-              onClick={() => generate(!!draft)}
-              disabled={drafting}
-            >
+            <Button variant="ghost" size="sm" className="ml-auto" onClick={() => generate(!!draft)} disabled={drafting}>
               <RefreshCw className={cn("size-3.5", drafting && "animate-spin")} aria-hidden />
               {draft ? "Regenerate" : "Generate draft"}
             </Button>
@@ -155,11 +157,14 @@ export function DraftComposer({ ticket, onUpdated }: { ticket: AdminTicket; onUp
           {draft?.source === "TEMPLATE" && !drafting && (
             <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
               <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
-              The AI is unavailable right now, so this draft was built from a policy template. Check the details before sending.
+              The AI is unavailable right now, so this draft was built from a policy template. Check the details before
+              sending.
             </div>
           )}
           {draftError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">{draftError}</div>
+            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+              {draftError}
+            </div>
           )}
 
           {drafting && !reply ? (
@@ -214,7 +219,9 @@ export function DraftComposer({ ticket, onUpdated }: { ticket: AdminTicket; onUp
             className="bg-amber-50/40"
           />
           <div className="flex items-center justify-between gap-3">
-            <p className="text-xs text-stone-500">Only visible to the BookLeaf team. Regenerated drafts take notes into account.</p>
+            <p className="text-xs text-stone-500">
+              Only visible to the BookLeaf team. Regenerated drafts take notes into account.
+            </p>
             <Button onClick={() => send("note")} loading={sending === "note"} disabled={!note.trim() || !!sending}>
               Add note
             </Button>

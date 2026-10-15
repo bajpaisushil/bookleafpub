@@ -1,6 +1,17 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Clock, Hourglass, Inbox, MessageSquare, Search, TriangleAlert, UserMinus, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Hourglass,
+  Inbox,
+  MessageSquare,
+  Search,
+  TriangleAlert,
+  UserMinus,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -88,36 +99,56 @@ function Queue() {
       <Card className="space-y-3 p-3">
         <div className="flex flex-wrap items-center gap-2">
           <SearchBox value={filter("q")} onChange={(value) => setFilter("q", value)} />
-          <Select aria-label="Status" className="w-auto" value={status.value} onChange={(e) => setFilter("status", e.target.value)}>
-            {STATUS_FILTERS.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </Select>
-          <Select aria-label="Category" className="w-auto" value={filter("category")} onChange={(e) => setFilter("category", e.target.value)}>
-            <option value="">All categories</option>
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {CATEGORY_LABELS[c]}
-              </option>
-            ))}
-          </Select>
-          <Select aria-label="Priority" className="w-auto" value={filter("priority")} onChange={(e) => setFilter("priority", e.target.value)}>
-            <option value="">All priorities</option>
-            {PRIORITIES.map((p) => (
-              <option key={p} value={p}>
-                {PRIORITY_LABELS[p]}
-              </option>
-            ))}
-          </Select>
-          <Select aria-label="Sort" className="w-auto" value={filter("sort") || "urgency"} onChange={(e) => setFilter("sort", e.target.value)}>
-            {SORTS.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </Select>
+          <div className="w-40">
+            <Select aria-label="Status" value={status.value} onChange={(e) => setFilter("status", e.target.value)}>
+              {STATUS_FILTERS.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="w-56">
+            <Select
+              aria-label="Category"
+              value={filter("category")}
+              onChange={(e) => setFilter("category", e.target.value)}
+            >
+              <option value="">All categories</option>
+              {CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {CATEGORY_LABELS[c]}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="w-40">
+            <Select
+              aria-label="Priority"
+              value={filter("priority")}
+              onChange={(e) => setFilter("priority", e.target.value)}
+            >
+              <option value="">All priorities</option>
+              {PRIORITIES.map((p) => (
+                <option key={p} value={p}>
+                  {PRIORITY_LABELS[p]}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="w-48">
+            <Select
+              aria-label="Sort"
+              value={filter("sort") || "urgency"}
+              onChange={(e) => setFilter("sort", e.target.value)}
+            >
+              {SORTS.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
+              ))}
+            </Select>
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex rounded-lg bg-stone-100 p-0.5" role="group" aria-label="Assignee">
@@ -127,7 +158,9 @@ function Queue() {
                 onClick={() => setFilter("assignee", a.value)}
                 className={cn(
                   "rounded-md px-3 py-1 text-sm font-medium transition",
-                  filter("assignee") === a.value ? "bg-white text-stone-900 shadow-xs" : "text-stone-500 hover:text-stone-800",
+                  filter("assignee") === a.value
+                    ? "bg-white text-stone-900 shadow-xs"
+                    : "text-stone-500 hover:text-stone-800",
                 )}
               >
                 {a.label}
@@ -136,11 +169,21 @@ function Queue() {
           </div>
           <label className="flex items-center gap-2 text-sm text-stone-500">
             From
-            <Input type="date" className="h-8 w-auto" value={filter("from")} onChange={(e) => setFilter("from", e.target.value)} />
+            <Input
+              type="date"
+              className="h-8 w-40"
+              value={filter("from")}
+              onChange={(e) => setFilter("from", e.target.value)}
+            />
           </label>
           <label className="flex items-center gap-2 text-sm text-stone-500">
             To
-            <Input type="date" className="h-8 w-auto" value={filter("to")} onChange={(e) => setFilter("to", e.target.value)} />
+            <Input
+              type="date"
+              className="h-8 w-40"
+              value={filter("to")}
+              onChange={(e) => setFilter("to", e.target.value)}
+            />
           </label>
           {hasFilters && (
             <button
@@ -167,7 +210,9 @@ function Queue() {
           <EmptyState
             icon={<Inbox className="size-5" />}
             title={hasFilters ? "No tickets match these filters" : "The queue is clear"}
-            description={hasFilters ? "Try widening the filters." : "New tickets from authors will appear here instantly."}
+            description={
+              hasFilters ? "Try widening the filters." : "New tickets from authors will appear here instantly."
+            }
           />
         ) : (
           data && (
@@ -186,7 +231,11 @@ function Queue() {
                   </thead>
                   <tbody className="divide-y divide-stone-100">
                     {data.tickets.map((ticket) => (
-                      <QueueRow key={ticket.id} ticket={ticket} onOpen={() => router.push(`/admin/tickets/${ticket.id}`)} />
+                      <QueueRow
+                        key={ticket.id}
+                        ticket={ticket}
+                        onOpen={() => router.push(`/admin/tickets/${ticket.id}`)}
+                      />
                     ))}
                   </tbody>
                 </table>
@@ -278,7 +327,10 @@ function QueueRow({ ticket, onOpen }: { ticket: TicketListItem; onOpen: () => vo
   return (
     <tr
       onClick={onOpen}
-      className={cn("cursor-pointer transition-colors hover:bg-stone-50", ticket.priority === "CRITICAL" && unresolved && "bg-red-50/40")}
+      className={cn(
+        "cursor-pointer transition-colors hover:bg-stone-50",
+        ticket.priority === "CRITICAL" && unresolved && "bg-red-50/40",
+      )}
     >
       <td className="px-4 py-3 align-top">
         <PriorityBadge priority={ticket.priority} />
@@ -321,7 +373,7 @@ function QueueRow({ ticket, onOpen }: { ticket: TicketListItem; onOpen: () => vo
           )}
         </div>
       </td>
-      <td className="px-4 py-3 text-stone-600">
+      <td className="px-4 py-3 whitespace-nowrap text-stone-600">
         {ticket.assignee?.name ?? <span className="text-stone-400">Unassigned</span>}
       </td>
       <td className="px-4 py-3 text-right whitespace-nowrap">
@@ -356,7 +408,10 @@ function SearchBox({ value, onChange }: { value: string; onChange: (value: strin
 
   return (
     <div className="relative min-w-56 flex-1">
-      <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-stone-400" aria-hidden />
+      <Search
+        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-stone-400"
+        aria-hidden
+      />
       <Input
         aria-label="Search tickets"
         placeholder="Search subject, author, book or #number"

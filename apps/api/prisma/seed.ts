@@ -80,10 +80,7 @@ async function main() {
     prisma.$executeRaw`ALTER SEQUENCE "Ticket_number_seq" RESTART WITH 1001`,
   ]);
 
-  const [authorHash, adminHash] = await Promise.all([
-    hashPassword(AUTHOR_PASSWORD),
-    hashPassword(ADMIN_PASSWORD),
-  ]);
+  const [authorHash, adminHash] = await Promise.all([hashPassword(AUTHOR_PASSWORD), hashPassword(ADMIN_PASSWORD)]);
 
   console.log(`Seeding ${data.authors.length} authors...`);
   for (const author of data.authors) {

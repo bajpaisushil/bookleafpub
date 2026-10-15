@@ -10,7 +10,11 @@ const server = app.listen(env.PORT, () => {
   const ai = aiInfo();
   console.log(`BookLeaf API listening on http://localhost:${env.PORT}`);
   console.log(`API docs at http://localhost:${env.PORT}/api/docs`);
-  console.log(ai.enabled ? `AI: ${ai.provider} (${ai.models.classify} / ${ai.models.draft})` : "AI: disabled, using rules and templates");
+  console.log(
+    ai.enabled
+      ? `AI: ${ai.provider} (${ai.models.classify} / ${ai.models.draft})`
+      : "AI: disabled, using rules and templates",
+  );
 });
 
 const stopSweeper = startClassificationSweeper();

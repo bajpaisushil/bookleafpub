@@ -44,7 +44,9 @@ export function Input({ className, invalid, ...props }: ComponentProps<"input"> 
 }
 
 export function Textarea({ className, invalid, ...props }: ComponentProps<"textarea"> & { invalid?: boolean }) {
-  return <textarea className={cn(control, border(invalid), "py-2 leading-6", className)} aria-invalid={invalid} {...props} />;
+  return (
+    <textarea className={cn(control, border(invalid), "py-2 leading-6", className)} aria-invalid={invalid} {...props} />
+  );
 }
 
 export function Select({ className, invalid, ...props }: ComponentProps<"select"> & { invalid?: boolean }) {

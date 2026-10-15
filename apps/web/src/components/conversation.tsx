@@ -66,7 +66,11 @@ function MessageItem({
       <span
         className={cn(
           "flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
-          internal ? "bg-amber-100 text-amber-900" : fromSupport ? "bg-brand-700 text-white" : "bg-stone-200 text-stone-700",
+          internal
+            ? "bg-amber-100 text-amber-900"
+            : fromSupport
+              ? "bg-brand-700 text-white"
+              : "bg-stone-200 text-stone-700",
         )}
         aria-hidden
       >
@@ -83,10 +87,15 @@ function MessageItem({
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
           <span className="font-semibold text-stone-900">{name}</span>
           {fromSupport && !internal && <span className="text-xs text-brand-800">BookLeaf Support</span>}
-          {internal && <span className="text-xs font-medium text-amber-900">Internal note · not visible to the author</span>}
+          {internal && (
+            <span className="text-xs font-medium text-amber-900">Internal note · not visible to the author</span>
+          )}
           {badge && <span className="rounded bg-stone-100 px-1.5 py-0.5 text-[11px] text-stone-600">{badge}</span>}
           {usedAiDraft && (
-            <span className="inline-flex items-center gap-1 text-[11px] text-stone-500" title="Started from the AI draft">
+            <span
+              className="inline-flex items-center gap-1 text-[11px] text-stone-500"
+              title="Started from the AI draft"
+            >
               <Sparkles className="size-3" aria-hidden /> AI-assisted
             </span>
           )}

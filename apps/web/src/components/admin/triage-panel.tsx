@@ -37,7 +37,11 @@ export function TriagePanel({ ticket, onUpdated }: { ticket: AdminTicket; onUpda
     try {
       const result = await api<{ ticket: AdminTicket }>(`/tickets/${ticket.id}/classify`, { method: "POST" });
       onUpdated(result.ticket);
-      toast(result.ticket.ai.status === "COMPLETED" ? "AI triage refreshed." : "AI unavailable; refreshed with keyword rules.");
+      toast(
+        result.ticket.ai.status === "COMPLETED"
+          ? "AI triage refreshed."
+          : "AI unavailable; refreshed with keyword rules.",
+      );
     } catch (err) {
       toast(err instanceof ApiError ? err.message : "Couldn't re-run triage.", "error");
     } finally {
@@ -53,7 +57,13 @@ export function TriagePanel({ ticket, onUpdated }: { ticket: AdminTicket; onUpda
       <CardHeader
         title="Triage"
         action={
-          <Button variant="ghost" size="sm" onClick={reclassify} loading={reclassifying} title="Ask the AI to classify again">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={reclassify}
+            loading={reclassifying}
+            title="Ask the AI to classify again"
+          >
             {!reclassifying && <RefreshCw className="size-3.5" aria-hidden />}
             Re-run AI
           </Button>
@@ -79,7 +89,15 @@ export function TriagePanel({ ticket, onUpdated }: { ticket: AdminTicket; onUpda
 
         <TriageField
           label="Priority"
-          suggestion={ai.priority && <AiSuggestion value={PRIORITY_LABELS[ai.priority]} overridden={ticket.priority !== ai.priority} />}
+          suggestion={
+            ai.priority && (
+              <AiSuggestion
+                value={PRIORITY_LABELS[ai.priority]}
+                overridden={ticket.priority !== ai.priority}
+                byRules={ai.status === "FALLBACK"}
+              />
+            )
+          }
         >
           <Select
             value={ticket.priority ?? ""}
@@ -100,7 +118,15 @@ export function TriagePanel({ ticket, onUpdated }: { ticket: AdminTicket; onUpda
 
         <TriageField
           label="Category"
-          suggestion={ai.category && <AiSuggestion value={CATEGORY_LABELS[ai.category]} overridden={ticket.category !== ai.category} />}
+          suggestion={
+            ai.category && (
+              <AiSuggestion
+                value={CATEGORY_LABELS[ai.category]}
+                overridden={ticket.category !== ai.category}
+                byRules={ai.status === "FALLBACK"}
+              />
+            )
+          }
         >
           <Select
             value={ticket.category ?? ""}
@@ -135,7 +161,12 @@ export function TriagePanel({ ticket, onUpdated }: { ticket: AdminTicket; onUpda
             <div className="font-medium text-stone-900">{ticket.assignee?.name ?? "Unassigned"}</div>
           </div>
           {assignedToMe ? (
-            <Button variant="secondary" size="sm" disabled={saving} onClick={() => update({ assigneeId: null }, "Ticket unassigned.")}>
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled={saving}
+              onClick={() => update({ assigneeId: null }, "Ticket unassigned.")}
+            >
               <UserMinus className="size-3.5" aria-hidden />
               Unassign
             </Button>
@@ -156,7 +187,15 @@ export function TriagePanel({ ticket, onUpdated }: { ticket: AdminTicket; onUpda
   );
 }
 
-function TriageField({ label, suggestion, children }: { label: string; suggestion?: React.ReactNode; children: React.ReactNode }) {
+function TriageField({
+  label,
+  suggestion,
+  children,
+}: {
+  label: string;
+  suggestion?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between gap-2">
@@ -168,11 +207,15 @@ function TriageField({ label, suggestion, children }: { label: string; suggestio
   );
 }
 
-function AiSuggestion({ value, overridden }: { value: string; overridden: boolean }) {
+function AiSuggestion({ value, overridden, byRules }: { value: string; overridden: boolean; byRules: boolean }) {
+  const source = byRules ? "Rules" : "AI";
   return (
-    <span className="inline-flex items-center gap-1 text-[11px] text-stone-500" title="What the AI suggested">
+    <span
+      className="inline-flex items-center gap-1 text-[11px] text-stone-500"
+      title={`What the ${source.toLowerCase()} suggested`}
+    >
       <Sparkles className="size-3 text-brand-700" aria-hidden />
-      {overridden ? `AI said ${value} · overridden` : "AI suggested"}
+      {overridden ? `${source} said ${value} · overridden` : `${source} suggested`}
     </span>
   );
 }

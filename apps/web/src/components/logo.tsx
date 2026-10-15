@@ -13,9 +13,16 @@ export function Logo({ inverted = false, subtitle }: { inverted?: boolean; subti
         <Leaf className="size-4.5" aria-hidden />
       </div>
       <div className="leading-tight">
-        <div className={cn("font-display text-lg font-semibold", inverted ? "text-white" : "text-stone-900")}>BookLeaf</div>
+        <div className={cn("font-display text-lg font-semibold", inverted ? "text-white" : "text-stone-900")}>
+          BookLeaf
+        </div>
         {subtitle && (
-          <div className={cn("text-[11px] font-medium tracking-wide uppercase", inverted ? "text-brand-200/80" : "text-stone-500")}>
+          <div
+            className={cn(
+              "text-[11px] font-medium tracking-wide uppercase",
+              inverted ? "text-brand-200/80" : "text-stone-500",
+            )}
+          >
             {subtitle}
           </div>
         )}

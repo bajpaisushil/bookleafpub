@@ -16,8 +16,7 @@ export async function listBooks(user: AuthUser, authorId?: string) {
     include: { author: { select: { id: true, user: { select: { name: true } } } } },
   });
 
-  const sum = (pick: (book: (typeof books)[number]) => number) =>
-    books.reduce((total, book) => total + pick(book), 0);
+  const sum = (pick: (book: (typeof books)[number]) => number) => books.reduce((total, book) => total + pick(book), 0);
 
   const royaltyPending = sum((book) => book.royaltyPending);
   const payout = getNextPayout();

@@ -46,7 +46,9 @@ export default function MyTicketsPage() {
             onClick={() => setTab(item)}
             className={cn(
               "-mb-px border-b-2 px-3 py-2 text-sm font-medium transition-colors",
-              tab.id === item.id ? "border-brand-700 text-brand-800" : "border-transparent text-stone-500 hover:text-stone-800",
+              tab.id === item.id
+                ? "border-brand-700 text-brand-800"
+                : "border-transparent text-stone-500 hover:text-stone-800",
             )}
           >
             {item.label}
@@ -90,7 +92,10 @@ function TicketRow({ ticket }: { ticket: TicketListItem }) {
   const newReply = ticket.lastMessageFrom === "SUPPORT" && ticket.status !== "CLOSED";
 
   return (
-    <Link href={`/author/tickets/${ticket.id}`} className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-stone-50">
+    <Link
+      href={`/author/tickets/${ticket.id}`}
+      className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-stone-50"
+    >
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-medium text-stone-400">#{ticket.number}</span>
@@ -114,7 +119,10 @@ function TicketRow({ ticket }: { ticket: TicketListItem }) {
           <span className="text-xs text-stone-400">Updated {timeAgo(ticket.updatedAt)}</span>
         )}
       </div>
-      <ChevronRight className="size-4 shrink-0 text-stone-300 transition group-hover:translate-x-0.5 group-hover:text-stone-500" aria-hidden />
+      <ChevronRight
+        className="size-4 shrink-0 text-stone-300 transition group-hover:translate-x-0.5 group-hover:text-stone-500"
+        aria-hidden
+      />
     </Link>
   );
 }

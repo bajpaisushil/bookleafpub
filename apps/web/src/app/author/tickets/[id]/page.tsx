@@ -46,7 +46,10 @@ export default function AuthorTicketPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <Link href="/author/tickets" className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-800">
+      <Link
+        href="/author/tickets"
+        className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-800"
+      >
         <ArrowLeft className="size-4" aria-hidden />
         My tickets
       </Link>
@@ -95,7 +98,9 @@ export default function AuthorTicketPage() {
             messages={ticket.messages}
           />
 
-          {ticket.status !== "CLOSED" && <ReplyBox ticket={ticket} onSent={(next) => mutate({ ticket: next }, false)} />}
+          {ticket.status !== "CLOSED" && (
+            <ReplyBox ticket={ticket} onSent={(next) => mutate({ ticket: next }, false)} />
+          )}
         </>
       )}
     </div>

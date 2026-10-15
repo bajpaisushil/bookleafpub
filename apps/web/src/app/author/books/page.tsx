@@ -1,6 +1,16 @@
 "use client";
 
-import { BookOpen, CalendarClock, IndianRupee, Library, MessageSquarePlus, Printer, Store, TrendingUp, Wallet } from "lucide-react";
+import {
+  BookOpen,
+  CalendarClock,
+  IndianRupee,
+  Library,
+  MessageSquarePlus,
+  Printer,
+  Store,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
 import Link from "next/link";
 import useSWR from "swr";
 import { StageTracker } from "@/components/stage-tracker";
@@ -21,7 +31,9 @@ export default function MyBooksPage() {
         <h1 className="font-display text-3xl font-semibold text-stone-900">
           {user ? `Welcome back, ${firstName(user.name)}` : "My books"}
         </h1>
-        <p className="mt-1 text-stone-500">Sales, royalties and production progress for every book you publish with us.</p>
+        <p className="mt-1 text-stone-500">
+          Sales, royalties and production progress for every book you publish with us.
+        </p>
       </div>
 
       {error && <ErrorState onRetry={() => mutate()} />}
@@ -62,7 +74,13 @@ export default function MyBooksPage() {
               label="Pending"
               icon={<CalendarClock className="size-4" aria-hidden />}
               value={formatRupees(data.summary.royaltyPending)}
-              detail="Paid in the next eligible payout"
+              detail={
+                data.summary.royaltyPending === 0
+                  ? "All paid up"
+                  : data.summary.nextPayout.eligible
+                    ? `Due by ${formatDate(data.summary.nextPayout.dueBy)}`
+                    : `Below ${formatRupees(data.summary.nextPayout.threshold)} minimum · rolls over`
+              }
             />
           </section>
 
@@ -134,7 +152,9 @@ function BookCard({ book }: { book: Book }) {
         )}
       </div>
 
-      <div className="flex-1 px-5 pb-5">{published ? <PublishedDetails book={book} /> : <ProductionDetails book={book} />}</div>
+      <div className="flex-1 px-5 pb-5">
+        {published ? <PublishedDetails book={book} /> : <ProductionDetails book={book} />}
+      </div>
 
       <div className="border-t border-stone-100 px-5 py-3">
         <Link
@@ -190,7 +210,9 @@ function PublishedDetails({ book }: { book: Book }) {
             </div>
           </>
         ) : (
-          <p className="mt-1 text-xs text-stone-500">No royalties yet. They&apos;ll appear here after your first sales.</p>
+          <p className="mt-1 text-xs text-stone-500">
+            No royalties yet. They&apos;ll appear here after your first sales.
+          </p>
         )}
       </div>
 
@@ -225,8 +247,8 @@ function ProductionDetails({ book }: { book: Book }) {
       <StageTracker status={book.status} />
       <div className="rounded-lg bg-amber-50/60 p-3 text-sm text-stone-700">
         <p>
-          Your book is at the <strong className="font-semibold text-stone-900">{stage}</strong> stage. We email you at every
-          step, and sales and royalties will show up here once it&apos;s live.
+          Your book is at the <strong className="font-semibold text-stone-900">{stage}</strong> stage. We email you at
+          every step, and sales and royalties will show up here once it&apos;s live.
         </p>
       </div>
     </div>

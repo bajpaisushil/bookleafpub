@@ -92,7 +92,10 @@ function NewTicketForm() {
 
   return (
     <div className="space-y-6">
-      <Link href="/author/tickets" className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-800">
+      <Link
+        href="/author/tickets"
+        className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-800"
+      >
         <ArrowLeft className="size-4" aria-hidden />
         My tickets
       </Link>

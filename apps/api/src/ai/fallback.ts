@@ -40,7 +40,10 @@ const CATEGORY_KEYWORDS: { category: TicketCategory; strong: string[]; weak: str
 
 const HOW_TO_QUESTION = /\b(how (do|can) i|can i|is it possible|could i)\b.*\b(update|change|edit|add)\b/;
 
-export function classifyWithRules(subject: string, description: string): {
+export function classifyWithRules(
+  subject: string,
+  description: string,
+): {
   category: TicketCategory;
   priority: TicketPriority;
   reason: string;
